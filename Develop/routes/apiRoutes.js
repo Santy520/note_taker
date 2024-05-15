@@ -19,15 +19,17 @@ router.post('/notes', (req, res) => {
     console.log(req.body);
 
     const { title, text } = req.body;
+    const id = uuid();
 
     if (req.body) {
         const newNote = {
+            id,
             title,
-            text,
-            note_id: uuid(),
+            text
+           
         };
 
-        readAndAppend(newNote, '../db/db.json');
+        readAndAppend(newNote, './db/db.json');
         res.json('note added succesfully');
     } else {
         res.error('Error in adding note');
@@ -41,23 +43,23 @@ module.exports = router
 // const path = require('path'); // Import path module for file paths
 // const uuid = require('../helpers/uuid');
 
-// // Define a helper function to read and append data to a JSON file
-// const readAndAppend = (newData, file) => {
-//   fs.readFile(file, 'utf8', (err, data) => {
-//     if (err) {
-//       console.error(err);
-//     } else {
-//       const parsedData = JSON.parse(data);
-//       parsedData.push(newData);
+// Define a helper function to read and append data to a JSON file
+const readAndAppend = (newData, file) => {
+  fs.readFile(file, 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+    } else {
+      const parsedData = JSON.parse(data);
+      parsedData.push(newData);
 
-//       fs.writeFile(file, JSON.stringify(parsedData, null, 2), (err) => {
-//         if (err) {
-//           console.error(err);
-//         }
-//       });
-//     }
-//   });
-// };
+      fs.writeFile(file, JSON.stringify(parsedData, null, 2), (err) => {
+        if (err) {
+          console.error(err);
+        }
+      });
+    }
+  });
+};
 
 // router.get('/notes', (req, res) => {
 //   fs.readFile(path.join(__dirname, '../db/db.json'), 'utf-8', (err, data) => {
