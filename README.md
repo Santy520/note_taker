@@ -47,8 +47,12 @@ THEN I am presented with empty fields to enter a new note title and the note’s
   
   # Questions
   
-  If you have any questions about the repo, open an issue or contact Santy520 directly sspalacio20@gmail.com.
+  If you have any questions about the repo, open an issue or contact directly:
+
+  Github - Santy520 
+
+  Email - sspalacio20@gmail.com
   
   # Image
 
-  [Screen Shot](../Assets/Screenshot%202024-05-15%20at%2012.21.46 AM.png)
+  ![Screen Shot](../Assets/Screenshot%202024-05-15%20at%2012.21.46 AM.png)
