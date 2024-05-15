@@ -1,94 +1,79 @@
 const router = require("express").Router();
-const fs = require ('fs')
-const uuid = require ('../helpers/uuid');
-const { title } = require("process");
-const { text } = require("express");
+const fs = require('fs');
+const uuid = require('../helpers/uuid');
 
+// Read notes
 router.get('/notes', (req, res) => {
-        fs.readFile('db/db.json', 'utf-8', (err, data) => {
-            if(err){
-                res.status(500).json(err)
-            } else{
-                res.status(200).json(JSON.parse(data))
-            }
-        });
+    fs.readFile('db/db.json', 'utf-8', (err, data) => {
+        if (err) {
+            res.status(500).json({ error: "Internal server error" });
+        } else {
+            res.status(200).json(JSON.parse(data));
+        }
+    });
 });
 
+// Add a note
 router.post('/notes', (req, res) => {
     console.info(`${req.method} request to add a note`);
-    console.log(req.body);
-
     const { title, text } = req.body;
     const id = uuid();
 
-    if (req.body) {
-        const newNote = {
-            id,
-            title,
-            text
-           
-        };
-
-        readAndAppend(newNote, './db/db.json');
-        res.json('note added succesfully');
-    } else {
-        res.error('Error in adding note');
+    if (!title || !text) {
+        return res.status(400).json({ error: "Title and text are required" });
     }
+
+    const newNote = { id, title, text };
+    readAndAppend(newNote, './db/db.json', (err) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: "Failed to add note" });
+        }
+        res.json('Note added successfully');
+    });
 });
 
-module.exports = router
-
-// const router = require("express").Router();
-// const fs = require('fs');
-// const path = require('path'); // Import path module for file paths
-// const uuid = require('../helpers/uuid');
-
-// Define a helper function to read and append data to a JSON file
-const readAndAppend = (newData, file) => {
-  fs.readFile(file, 'utf8', (err, data) => {
-    if (err) {
-      console.error(err);
-    } else {
-      const parsedData = JSON.parse(data);
-      parsedData.push(newData);
-
-      fs.writeFile(file, JSON.stringify(parsedData, null, 2), (err) => {
+// Helper function to read and append data
+const readAndAppend = (newData, file, callback) => {
+    fs.readFile(file, 'utf8', (err, data) => {
         if (err) {
-          console.error(err);
+            return callback(err);
         }
-      });
-    }
-  });
+        const parsedData = JSON.parse(data);
+        parsedData.push(newData);
+        fs.writeFile(file, JSON.stringify(parsedData, null, 2), (err) => {
+            if (err) {
+                return callback(err);
+            }
+            callback(null);
+        });
+    });
 };
 
-// router.get('/notes', (req, res) => {
-//   fs.readFile(path.join(__dirname, '../db/db.json'), 'utf-8', (err, data) => {
-//     if (err) {
-//       res.status(500).json(err);
-//     } else {
-//       res.status(200).json(JSON.parse(data));
-//     }
-//   });
-// });
+// Delete a note
+router.delete('/notes/:id', (req, res) => {
+  console.info(`${req.method} request to delete a note`);
+  const noteId = req.params.id;
 
-// router.post('/notes', (req, res) => {
-//   console.info(`${req.method} request to add a note`);
-//   console.log(req.body);
+  fs.readFile('db/db.json', 'utf8', (err, data) => {
+      if (err) {
+          return res.status(500).json({ error: "Internal server error" });
+      }
 
-//   const { username, topic } = req.body;
+      let notes = JSON.parse(data);
+      const updatedNotes = notes.filter(note => note.id !== noteId);
 
-//   if (username && topic) { // Check if both username and topic are provided
-//     const newNote = {
-//       username,
-//       topic,
-//       note_id: uuid(),
-//     };
+      if (notes.length === updatedNotes.length) {
+          return res.status(404).json({ error: "Note not found" });
+      }
 
-//     readAndAppend(newNote, path.join(__dirname, '../db/db.json')); // Use the helper function to append the new note
-//     res.status(200).json('Note added successfully');
-//   } else {
-//     res.status(400).send('Both username and topic are required'); // Send a 400 Bad Request response if data is missing
-//   }
-// });
-
-// module.exports = router;
+      fs.writeFile('db/db.json', JSON.stringify(updatedNotes, null, 2), (err) => {
+          if (err) {
+              console.error(err);
+              return res.status(500).json({ error: "Failed to delete note" });
+          }
+          res.json('Note deleted successfully');
+      });
+  });
+});
+module.exports = router;
