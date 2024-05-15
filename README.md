@@ -55,4 +55,4 @@ THEN I am presented with empty fields to enter a new note title and the note’s
   
   # Image
 
-  ![Screen Shot](../Assets/Screenshot%202024-05-15%20at%2012.21.46 AM.png)
+  ![Screen Shot](/Assets/Screenshot%202024-05-15%20at%2012.21.46 AM.png)
