@@ -13,7 +13,7 @@
   * [License](#license)
   * [Contributing](#contributing)
   * [Questions](#questions)
-  * [Image](#image)
+  * [Image/Video](#imagevideo-link)
 
   # User Story
 
