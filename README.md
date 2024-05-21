@@ -53,6 +53,10 @@ THEN I am presented with empty fields to enter a new note title and the note’s
 
   Email - sspalacio20@gmail.com
   
-  # Image
+  # Image/Video Link
 
   ![Screen Shot](/Assets/Screenshot%202024-05-15%20at%2012.21.46 AM.png)
+
+Follow link below to access walkthrough video.
+
+https://drive.google.com/file/d/1PuJiDNDwEUpMzI7pwHoocuLNmr7a8HdV/view?usp=drive_link
